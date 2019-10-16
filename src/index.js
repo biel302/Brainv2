@@ -13,10 +13,16 @@ class Reservation extends React.Component {
       themes: [],
       countTheme: 0,
       nextPage: false,
+      words: [],
       isActive: true
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.incCountTheme = this.incCountTheme.bind(this);
+    this.decCountTheme = this.decCountTheme.bind(this);
+    this.exitTheme = this.exitTheme.bind(this);
+    this.wordsInput = this.wordsInput.bind(this);
   }
 
   handleInputChange(event) {
@@ -31,18 +37,69 @@ class Reservation extends React.Component {
   }
 
   handleSubmit(event) {
-    console.log("oi2");
-    this.setState({
-      nextPage: true
-    });
     event.preventDefault();
+    const list = [];
+
+    for (let i = 0; i < this.state.themes.length; i++) {
+      list.push([]);
+    }
+    console.log(list);
+    
+    if (this.state.time === 0 || this.state.title === '' || this.state.description === '' || this.state.themes.length === 0) {
+      alert('Todos os campos são obrigatórios!');
+    } else {
+      this.setState({
+        nextPage: true,
+        words: list
+      });
+    }
+    console.log(this.state.words);    
+  }
+
+  incCountTheme() {
+    this.setState({
+      countTheme: this.state.countTheme + 1
+    });
+    this.render();
+  }
+
+  decCountTheme() {
+    this.setState({
+      countTheme: this.state.countTheme - 1
+    });
+    this.render();
+  }
+
+  exitTheme() {
+    this.setState({
+      title: "",
+      description: "",
+      time: 0,
+      themes: [],
+      countTheme: 0,
+      nextPage: false,
+      isActive: true
+    });
+  }
+
+  wordsInput(event) {
+    event.preventDefault();
+    const lst = this.state.words
+    lst[this.state.countTheme].push(this.wordValue.value);
+    console.log(lst);
+    console.log(this.wordValue.value);
+    console.log(this.state.words);
+    this.setState({
+      words: lst
+    });
+    console.log(this.state.words);
   }
 
   formRender() {
     return (
       <form>
         <label>
-          Title:
+          Title*:
           <input
             name="title"
             type="text"
@@ -52,7 +109,7 @@ class Reservation extends React.Component {
         </label>
         <br />
         <label>
-          Description:
+          Description*:
           <input
             name="description"
             type="text"
@@ -62,7 +119,7 @@ class Reservation extends React.Component {
         </label>
         <br />
         <label>
-          Time (in minutes):
+          Time (in seconds)*:
           <input
             name="time"
             type="number"
@@ -72,7 +129,7 @@ class Reservation extends React.Component {
         </label>
         <br />
         <label>
-          Themes:
+          Themes*:
           <input
             name="themes"
             type="text"
@@ -89,8 +146,45 @@ class Reservation extends React.Component {
   }
 
   pageRender() {
-    console.log("oi");
-    return <h1>{this.state.themes[this.state.countTheme]}</h1>;
+    return ( 
+    <div>
+       {(this.state.countTheme > 0) ?
+        <button
+          type="button"
+          onClick={this.decCountTheme}
+        >
+          Back
+        </button> : ""
+        }
+
+      <h1>{this.state.themes[this.state.countTheme]}</h1>    
+
+      { (this.state.countTheme === this.state.themes.length - 1) ?
+        <button
+          type="button"
+          onClick={this.exitTheme}
+        >
+          Exit
+        </button> :
+        <button
+                type="button"
+                onClick={this.incCountTheme}
+              >
+                Next
+        </button>
+      }      
+      <br />
+      <p>{this.state.words[this.state.countTheme]}</p>
+      <br />
+      <input id="word" name="word" type="text" ref = {el => this.wordValue=el}></input>
+      <button
+                type="button"
+                onClick={this.wordsInput}
+              >
+                enviar
+        </button>
+    </div>
+    );
   }
 
   render() {

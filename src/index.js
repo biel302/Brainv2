@@ -99,7 +99,12 @@ class Reservation extends React.Component {
   wordsInput(event) {
     event.preventDefault();
     const lst = this.state.words;
-    lst[this.state.countTheme].push(this.wordValue.value);
+    if (this.wordValue.value.trim() === "") {
+      alert("Não é possível inserir palavra vazia");
+      this.wordValue.value = "";
+      return;
+    }
+    lst[this.state.countTheme].push(this.wordValue.value.trim());
     console.log(lst);
     console.log(this.wordValue.value);
     console.log(this.state.words);
@@ -113,19 +118,17 @@ class Reservation extends React.Component {
   wordsShow() {
     const listHTML = [];
     for (let i = 0; i < this.state.words[this.state.countTheme].length; i++) {
-      listHTML.push(this.state.words[this.state.countTheme][i] + ", ");
+      listHTML.push(<td> {this.state.words[this.state.countTheme][i]} </td>);
     }
     return (
       <table className="table table-striped table-dark">
         <thead className="thead-dark">
           <tr>
-            <th className="align-middle">Words</th>
+            <th className="text-center">Words</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td colspan="2">{listHTML}</td>
-          </tr>
+          <tr>{listHTML}</tr>
         </tbody>
       </table>
     );
@@ -220,7 +223,7 @@ class Reservation extends React.Component {
           <div class="input-group-prepend">
             <button
               className="btn btn-dark"
-              disabled={this.state.countTheme > 0 ? "true" : "false"}
+              disabled={this.state.countTheme === 0}
               onClick={this.decCountTheme}
             >
               Back

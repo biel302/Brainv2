@@ -2,8 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import bootstrap from "bootstrap"; // eslint-disable-line no-unused-vars
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-
-import "./styles.css";
+import Popup from "./View/Popup";
 
 class Reservation extends React.Component {
   constructor(props) {
@@ -16,7 +15,8 @@ class Reservation extends React.Component {
       countTheme: 0,
       nextPage: false,
       words: [],
-      isActive: true
+      isActive: true,
+      showPopup: false
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -26,6 +26,7 @@ class Reservation extends React.Component {
     this.exitTheme = this.exitTheme.bind(this);
     this.wordsInput = this.wordsInput.bind(this);
     this.wordsShow = this.wordsShow.bind(this);
+    this.togglePopup = this.togglePopup.bind(this);
   }
 
   handleInputChange(event) {
@@ -96,6 +97,12 @@ class Reservation extends React.Component {
     });
   }
 
+  togglePopup() {
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
+  }
+
   wordsInput(event) {
     event.preventDefault();
     const lst = this.state.words;
@@ -113,6 +120,52 @@ class Reservation extends React.Component {
       words: lst
     });
     console.log(this.state.words);
+  }
+
+  popupRender() {
+    return (
+      <div className="popup">
+        <div className="popup\_inner">
+          <h1>{this.props.text}</h1>
+          <button onClick={this.props.closePopup}>close me</button>
+        </div>
+      </div>
+    );
+  }
+
+  endPage() {
+    return (
+      <div>
+        <div>
+          {this.state.showPopup ? (
+            <Popup
+              text='Click "Close Button" to hide popup'
+              closePopup={this.togglePopup.bind(this)}
+            />
+          ) : null}
+        </div>
+        <div>
+          <div>
+            <button className="btn btn-dark" onClick={this.handleSubmit}>
+              Review
+            </button>
+          </div>
+          <div>
+            <button className="btn btn-dark" onClick={this.handleSubmit}>
+              Exit
+            </button>
+          </div>
+          <div>
+            <a href="/themes.txt">Download</a>
+          </div>
+          <div>
+            <button className="btn btn-dark" onClick={this.handleSubmit}>
+              Feedback
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   wordsShow() {
